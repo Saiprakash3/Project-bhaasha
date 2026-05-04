@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'Proxima Nova';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/ProximaNova-Regular.woff2') format('woff2'),
+       url('./fonts/ProximaNova-Regular.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-style: italic;
+  font-weight: 400;
+  src: url('./fonts/ProximaNova-Italic.woff2') format('woff2'),
+       url('./fonts/ProximaNova-Italic.woff') format('woff');
+  font-display: swap;
+}
+
+:root {
+  font-family: 'Proxima Nova', sans-serif;
+}
+
+body {
+  background-color: #E9EDF5;
+  margin: 0;
+  margin-top: 20px;
+  padding: 0;
+  font-family: 'Proxima Nova', sans-serif;
+}
+
+.mentor-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mentor-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: #262222;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+  font-size: 20px;
+  line-height: 1;
+  color: #579651;
+}
