@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const HeroSection = () => {
+  const [hoveredButton, setHoveredButton] = useState(null)
+  const [pressedButton, setPressedButton] = useState(null)
+
   return (
     <div style={styles.page}>
       <div style={styles.left}>
@@ -28,8 +31,33 @@ const HeroSection = () => {
         </div>
 
         <div style={styles.buttonsRow}>
-          <button style={styles.demoButton}>Demo Session</button>
-          <button style={styles.contactButton}>Contact Us</button>
+          <button
+            style={{
+              ...styles.demoButton,
+              backgroundColor: pressedButton === 'demo' ? '#86451A' : hoveredButton === 'demo' ? '#DD7B02' : styles.demoButton.backgroundColor,
+              color: pressedButton === 'demo' ? '#D9D9D9' : hoveredButton === 'demo' ? '#27272A' : styles.demoButton.color,
+            }}
+            onMouseEnter={() => setHoveredButton('demo')}
+            onMouseLeave={() => { setHoveredButton(null); setPressedButton(null); }}
+            onMouseDown={() => setPressedButton('demo')}
+            onMouseUp={() => setPressedButton(null)}
+          >
+            Demo Session
+          </button>
+          <button
+            style={{
+              ...styles.contactButton,
+              backgroundColor: pressedButton === 'contact' ? '#86451A' : 'transparent',
+              color: pressedButton === 'contact' ? '#D9D9D9' : hoveredButton === 'contact' ? '#27272A' : styles.contactButton.color,
+              border: pressedButton === 'contact' ? 'none' : hoveredButton === 'contact' ? '2px solid #DD7B02' : styles.contactButton.border,
+            }}
+            onMouseEnter={() => setHoveredButton('contact')}
+            onMouseLeave={() => { setHoveredButton(null); setPressedButton(null); }}
+            onMouseDown={() => setPressedButton('contact')}
+            onMouseUp={() => setPressedButton(null)}
+          >
+            Contact Us
+          </button>
         </div>
       </div>
 

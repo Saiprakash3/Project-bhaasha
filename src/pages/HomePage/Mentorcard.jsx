@@ -1,5 +1,5 @@
 import React from 'react'
-import mentorImage from '../assets/img-2.png'
+import mentorImage from '../../assets/img-2.png'
 
 const Mentorcard = () => {
   return (
