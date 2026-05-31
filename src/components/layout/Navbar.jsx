@@ -103,6 +103,11 @@ const Navbar = () => {
                 ref={(el) => { linkRefs.current[key] = el }}
                 onMouseEnter={() => setHoveredLink(key)}
                 onMouseLeave={() => setHoveredLink(null)}
+                onClick={() => {
+                  if (to !== '/#contact') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
+                }}
               >
                 <li style={{
                   ...styles.li,
