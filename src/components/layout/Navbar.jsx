@@ -1,40 +1,98 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
   const [hoveredLink, setHoveredLink] = useState(null)
   const [hoveredButton, setHoveredButton] = useState(null)
   const [pressedButton, setPressedButton] = useState(null)
+  const [indicatorStyle, setIndicatorStyle] = useState({})
+  const [visible, setVisible] = useState(true)
+  const lastScrollY = useRef(0)
   const location = useLocation()
+  const navRef = useRef(null)
+  const linkRefs = useRef({})
 
   const navLinks = [
     { label: 'Home', to: '/', key: 'home' },
     { label: 'Courses', to: '/courses', key: 'courses' },
     { label: 'Resources', to: '/resources', key: 'resources' },
     { label: 'Certificates', to: '/certificates', key: 'certificates' },
-    { label: 'Contact Us', to: '#contact', key: 'contact' },
+    { label: 'Contact Us', to: '/#contact', key: 'contact' },
   ]
 
+  const getActiveKey = () => {
+    for (const { to, key } of navLinks) {
+      if (to === '/#contact' && location.hash === '#contact') return key
+      if (to === '/' && location.pathname === '/') return key
+      if (to !== '/' && to !== '#contact' && location.pathname.startsWith(to)) return key
+    }
+    return null
+  }
+
+  const activeKey = getActiveKey()
+
+  useEffect(() => {
+    const targetKey = hoveredLink || activeKey
+    const el = linkRefs.current[targetKey]
+    const nav = navRef.current
+    if (el && nav) {
+      const navRect = nav.getBoundingClientRect()
+      const elRect = el.getBoundingClientRect()
+      setIndicatorStyle({
+        width: elRect.width,
+        transform: `translateX(${elRect.left - navRect.left}px)`,
+        opacity: 1,
+      })
+    } else {
+      setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }))
+    }
+  }, [hoveredLink, activeKey, location])
+
+  useEffect(() => {
+    if (location.hash === '#contact') {
+      const el = document.getElementById('contact')
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+      }
+    }
+  }, [location])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY
+      if (currentY < lastScrollY.current || currentY < 10) {
+        setVisible(true)
+      } else {
+        setVisible(false)
+      }
+      lastScrollY.current = currentY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <div style={styles.page}>
+    <div style={{
+      ...styles.page,
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      transform: visible ? 'translateY(0)' : 'translateY(-110%)',
+      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }}>
       <nav style={styles.nav}>
-        {/* Part 1: Logo */}
         <div style={styles.part1}>
           <span style={styles.logo}>Project Bhaasha</span>
         </div>
 
-        {/* Part 2: Navigation Links */}
-        <div style={styles.part2}>
-          {navLinks.map(({ label, to, key }) => {
-            let isActive = false
-            if (to === '#contact') {
-              isActive = location.hash === '#contact'
-            } else if (to === '/') {
-              isActive = location.pathname === '/'
-            } else {
-              isActive = location.pathname.startsWith(to)
-            }
+        <div style={styles.part2} ref={navRef}>
+          <div style={{ ...styles.indicator, ...indicatorStyle }} />
 
+          {navLinks.map(({ label, to, key }) => {
+            const isActive = activeKey === key
             const isHovered = hoveredLink === key
 
             return (
@@ -42,14 +100,16 @@ const Navbar = () => {
                 key={key}
                 to={to}
                 style={styles.a}
+                ref={(el) => { linkRefs.current[key] = el }}
                 onMouseEnter={() => setHoveredLink(key)}
                 onMouseLeave={() => setHoveredLink(null)}
               >
                 <li style={{
                   ...styles.li,
-                  backgroundColor: isActive ? '#1B2436' : isHovered ? '#1B2436' : 'transparent',
-                  color: isActive ? '#D9D9D9' : isHovered ? '#D9D9D9' : '#27272A',
+                  color: isActive || isHovered ? '#D9D9D9' : '#27272A',
                   fontWeight: isActive ? '600' : '400',
+                  position: 'relative',
+                  zIndex: 1,
                 }}>
                   {label}
                 </li>
@@ -58,7 +118,6 @@ const Navbar = () => {
           })}
         </div>
 
-        {/* Part 3: Auth Buttons */}
         <div style={styles.part3}>
           <button
             style={{
@@ -117,14 +176,25 @@ const styles = {
   part2: {
     display: 'flex',
     flexDirection: 'row',
-    gap: '0',
     listStyle: 'none',
     alignItems: 'center',
     margin: 0,
-    padding: '0',
+    padding: '6px',
     backgroundColor: '#F4F6FB',
     borderRadius: '24px',
     boxShadow: '0 2px 12px rgba(0, 0, 0, 0.25)',
+    position: 'relative',
+  },
+  indicator: {
+    position: 'absolute',
+    top: '6px',
+    left: 0,
+    height: 'calc(100% - 12px)',
+    backgroundColor: '#1B2436',
+    borderRadius: '16px',
+    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease',
+    pointerEvents: 'none',
+    zIndex: 0,
   },
   part3: {
     display: 'flex',
@@ -136,15 +206,6 @@ const styles = {
     fontSize: '28px',
     fontWeight: 'bold',
   },
-  ul: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '28px',
-    listStyle: 'none',
-    alignItems: 'center',
-    margin: 0,
-    padding: 0,
-  },
   li: {
     color: '#27272A',
     cursor: 'pointer',
@@ -155,14 +216,11 @@ const styles = {
     paddingTop: '12px',
     paddingBottom: '12px',
     fontWeight: '400',
-    backgroundColor: 'transparent',
-    border: '1px solid transparent',
     borderRadius: '16px',
-    transition: 'all 0.2s ease',
+    transition: 'color 0.2s ease',
   },
   a: {
     textDecoration: 'none',
-    underline: 'none',
   },
   primaryButton: {
     padding: '10px 16px',
@@ -183,7 +241,7 @@ const styles = {
     cursor: 'pointer',
     color: '#27272A',
     backgroundColor: 'transparent',
-  }
+  },
 }
 
 export default Navbar

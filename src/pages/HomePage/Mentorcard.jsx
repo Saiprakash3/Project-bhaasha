@@ -11,10 +11,10 @@ const Mentorcard = () => {
             <div className='mentor-info' style={styles.mentorInfo}>
                 <h3>Shriraksha Gudadari - <span style={{ fontWeight: '400' }}>Kannada Language Trainer</span></h3>
                 <ul className="mentor-list">
-                    <li className="mentor-list-item"><span className="material-symbols-outlined">check_circle</span>Learn Kannada alphabets & authentic pronunciation with me </li>
-                    <li className="mentor-list-item"><span className="material-symbols-outlined">check_circle</span>Vocabulary games for immersive learning</li>
-                    <li className="mentor-list-item"><span className="material-symbols-outlined">check_circle</span> Weekend practice circles with community support</li>
-                    <li className="mentor-list-item"><span className="material-symbols-outlined">check_circle</span> Emphasis on spoken fluency & real-life usage.</li>
+                    <li className="mentor-list-item"><span className="material-symbols-outlined">✔</span>Learn Kannada alphabets & authentic pronunciation with me </li>
+                    <li className="mentor-list-item"><span className="material-symbols-outlined">✔</span>Vocabulary games for immersive learning</li>
+                    <li className="mentor-list-item"><span className="material-symbols-outlined">✔</span> Weekend practice circles with community support</li>
+                    <li className="mentor-list-item"><span className="material-symbols-outlined">✔</span> Emphasis on spoken fluency & real-life usage.</li>
                 </ul>
                 <button style={styles.bookButton}>Book session</button>
             </div>
